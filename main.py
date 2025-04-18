@@ -32,11 +32,24 @@ def get_db() -> Session:
 DBSessionDep = Annotated[Session, Depends(get_db)]
 CurrentUserDep = Annotated[dict, Depends(get_current_user)]
 
-# Auth router (yo‘llar guruhi)
 auth_router = APIRouter(
     prefix="/auth",
     tags=["auth"]
 )
+
+product_router = APIRouter(
+    prefix="/product",
+    tags=["product"]
+)
+
+
+@product_router.get("/")
+async def get_product(current_user: CurrentUserDep):
+    return {"products": {
+        "apple": 2000,
+        "banana": 5000,
+        "mango": 7000
+    }}
 
 
 @auth_router.get("/user", status_code=status.HTTP_200_OK)
@@ -94,3 +107,4 @@ async def login_for_access_token(
 
 
 app.include_router(auth_router)
+app.include_router(product_router)
